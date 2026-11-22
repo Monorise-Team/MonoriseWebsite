@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [dev, prod]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # Nazwa jest wymagana przez reguły gałęzi dev i prod. Nie zmieniaj jej bez zmiany reguł.
+    name: Lint, types and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Instalacja zależności
+        run: pnpm install --frozen-lockfile
+      - name: Formatowanie, lint, typy i build
+        run: pnpm run check
+
+  release-source:
+    # Do prod trafia tylko dev (wydanie) albo flow/hotfix-* (pilna poprawka) z tego repozytorium.
+    name: Release source branch
+    if: github.event_name == 'pull_request' && github.base_ref == 'prod'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sprawdzenie gałęzi źródłowej
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          THIS_REPO: ${{ github.repository }}
+        run: |
+          if [ "$HEAD_REPO" != "$THIS_REPO" ]; then
+            echo "::error::Pull request do prod musi pochodzić z tego repozytorium, nie z forka."
+            exit 1
+          fi
+          case "$HEAD_REF" in
+            dev | flow/hotfix-*) echo "Gałąź $HEAD_REF może trafić do prod." ;;
+            *)
+              echo "::error::Do prod trafiają tylko zmiany z dev albo z flow/hotfix-*. Ta gałąź: $HEAD_REF"
+              exit 1
+              ;;
+          esac
