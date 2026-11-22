@@ -1,0 +1,46 @@
+# AGENTS.md
+
+Zasady dla agentów AI i osób pracujących w tym repozytorium.
+
+## Czym jest to repozytorium
+
+Strona wizytówka [monorise.studio](https://monorise.studio): po polsku pod `/`, po angielsku pod `/en`. Next.js (App Router) z eksportem statycznym (`output: "export"`), React, TypeScript i Tailwind CSS v4. Hosting: Vercel (plan Hobby), a w razie potrzeby GitHub Pages. Decyzja i ryzyka: ADR-0085 w repozytorium MonoriseDocumentation.
+
+## Polecenia
+
+| Polecenie      | Co robi                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `pnpm install` | instaluje zależności (nowe wersje paczek dopiero 3 dni po publikacji: `minimumReleaseAge`) |
+| `pnpm dev`     | serwer deweloperski na http://localhost:3000                                               |
+| `pnpm check`   | formatowanie, lint, typy i build; musi przejść przed każdym pull requestem                 |
+| `pnpm format`  | formatuje pliki Prettierem                                                                 |
+
+## Gdzie co jest
+
+- `src/app/(pl)` i `src/app/(en)`: dwa układy główne, każdy z własnym `<html lang>`.
+- `src/app/global-not-found.tsx`: wspólna strona 404.
+- `src/app/og/pl.png` i `src/app/og/en.png`: obrazy do udostępniania linku, generowane przy buildzie.
+- `src/content/pl.ts` i `src/content/en.ts`: wszystkie teksty strony; ich kształt opisuje typ `Dictionary` w `src/content/types.ts`.
+- `src/components`: sekcje strony. Wszystkie są komponentami serwerowymi poza `reveal-observer.tsx`.
+- `src/lib`: adres strony i dane kontaktowe (`site.ts`), metadane, wspólne klasy przycisków i nagłówków.
+- `src/app/globals.css`: kolory, czcionki i animacje (`@theme`).
+
+## Zasady
+
+1. Strona zostaje statyczna. Bez API, middleware, ISR, ciasteczek, optymalizacji `next/image` i innych funkcji wymagających serwera.
+2. Bez analityki, ciasteczek, zewnętrznych czcionek i skryptów z innych domen. Stopka obiecuje to odwiedzającym.
+3. Każdy tekst istnieje w obu językach. Nowe pole dodaj najpierw do `Dictionary`, potem do `pl.ts` i `en.ts`.
+4. W tekstach strony nie używamy pauz ani półpauz. Zamiast nich przecinek, dwukropek albo nowe zdanie.
+5. Nie przedstawiaj jako gotowych produktów ani funkcji, których jeszcze nie ma. Produkty mają etykietę „W przygotowaniu”.
+6. Dostępność: semantyczny HTML, widoczny fokus, obsługa `prefers-reduced-motion`, kontrast co najmniej WCAG AA.
+7. Ikony tylko z `@phosphor-icons/react`, importowane z `@phosphor-icons/react/dist/ssr`.
+8. Kolory, czcionki i promienie zaokrągleń bierz z `globals.css`. Na stronie jest jeden kolor akcentu (fiolet `accent`).
+
+## Gałęzie i wydania
+
+- Zmiana: gałąź `flow/<zmiana>` od `dev`, pull request do `dev` (squash).
+- Wydanie: pull request z `dev` do `prod` (zwykłe scalenie). Vercel wdraża `prod` na monorise.studio.
+- Pilna poprawka: `flow/hotfix-<opis>` od `prod`, pull request do `prod`, a potem pull request z `prod` do `dev`, żeby poprawka nie zniknęła przy następnym wydaniu.
+- Wymagane kontrole: „Lint, types and build”, a dla `prod` także „Release source branch”.
+- Poprawki bezpieczeństwa od Dependabota trafiają jako pull request do `prod` i nie przejdą kontroli gałęzi źródłowej. Przenieś taką zmianę na `flow/hotfix-<opis>`.
+- Bez force push, `git reset --hard` i usuwania gałęzi `prod` i `dev`.
