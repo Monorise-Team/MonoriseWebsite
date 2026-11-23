@@ -15,6 +15,8 @@ Strona wizytówka [monorise.studio](https://monorise.studio): po polsku pod `/`,
 | `pnpm check`   | formatowanie, lint, typy i build; musi przejść przed każdym pull requestem                 |
 | `pnpm format`  | formatuje pliki Prettierem                                                                 |
 
+`pnpm install` instaluje też hooki Gita (husky): przed commitem lint, formatowanie i typy, przy commicie sprawdzenie wiadomości.
+
 ## Gdzie co jest
 
 - `src/app/(pl)` i `src/app/(en)`: dwa układy główne, każdy z własnym `<html lang>`.
@@ -42,7 +44,8 @@ Proces jak w całej organizacji (ADR-0086 w MonoriseDocumentation, skrót w [zas
 
 - Każde zadanie zaczyna się od zgłoszenia z formularza. Gałąź zakładasz ze zgłoszenia: `gh issue develop <numer> --name "flow/<typ>/<numer>-<opis>" --base dev`, np. `flow/feature/004-pricing-section`.
 - Pull request do `dev` (domyślna gałąź) z szablonu: `Closes #<numer>` i sekcja „Dla użytkowników”. Scalamy zwykłym scaleniem (merge commit), nigdy przez squash.
-- Wydanie: pull request z `dev` do `prod` („🚀 Release: dev → prod”). Vercel wdraża `prod` na monorise.studio. Po każdym wypchnięciu na `prod` automat scala `prod` z powrotem do `dev`.
+- Commity: [Conventional Commits](https://www.conventionalcommits.org/) po angielsku (`feat`, `fix`, `chore`, `docs`…), nagłówek do 72 znaków, linie opisu do 100. Hook `commit-msg` sprawdza to commitlintem (`commitlint.config.mjs`), a `pre-commit` uruchamia ESLint i Prettier na zmienionych plikach i sprawdza typy.
+- Wydanie: pull request z `dev` do `prod` („🚀 Release: dev → prod”). Po scaleniu Release Please liczy wersję z commitów, dopisuje `CHANGELOG.md` i oznacza wydanie `vX.Y.Z`; wersji nie zmieniamy ręcznie. Vercel wdraża `prod` na monorise.studio, a automat scala `prod` z powrotem do `dev`.
 - Pilna poprawka: `flow/hotfix/<numer>-<opis>` od `prod`, pull request do `prod`.
 - Automat pull requestów odrzuca gałęzie spoza konwencji, a do `prod` wpuszcza tylko `dev` i `flow/hotfix/…`. Przed scaleniem sprawdź, że „Lint, types and build” jest zielone.
 - Bez force push, `git reset --hard` i usuwania gałęzi `prod` i `dev`.

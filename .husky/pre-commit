@@ -1,0 +1,3 @@
+# Zmienione pliki: ESLint i Prettier; potem typy całej strony.
+pnpm exec lint-staged
+pnpm typecheck
