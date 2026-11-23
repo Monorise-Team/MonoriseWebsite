@@ -15,6 +15,8 @@ Strona wizytówka [monorise.studio](https://monorise.studio): po polsku pod `/`,
 | `pnpm check`   | formatowanie, lint, typy i build; musi przejść przed każdym pull requestem                 |
 | `pnpm format`  | formatuje pliki Prettierem                                                                 |
 
+`pnpm install` instaluje też hooki Gita (husky): przed commitem lint, formatowanie i typy, przy commicie sprawdzenie wiadomości.
+
 ## Gdzie co jest
 
 - `src/app/(pl)` i `src/app/(en)`: dwa układy główne, każdy z własnym `<html lang>`.
@@ -38,9 +40,12 @@ Strona wizytówka [monorise.studio](https://monorise.studio): po polsku pod `/`,
 
 ## Gałęzie i wydania
 
-- Zmiana: gałąź `flow/<zmiana>` od `dev`, pull request do `dev` (squash).
-- Wydanie: pull request z `dev` do `prod` (zwykłe scalenie). Vercel wdraża `prod` na monorise.studio.
-- Pilna poprawka: `flow/hotfix-<opis>` od `prod`, pull request do `prod`, a potem pull request z `prod` do `dev`, żeby poprawka nie zniknęła przy następnym wydaniu.
-- Wymagane kontrole: „Lint, types and build”, a dla `prod` także „Release source branch”.
-- Poprawki bezpieczeństwa od Dependabota trafiają jako pull request do `prod` i nie przejdą kontroli gałęzi źródłowej. Przenieś taką zmianę na `flow/hotfix-<opis>`.
+Proces jak w całej organizacji (ADR-0086 w MonoriseDocumentation, skrót w [zasadach współpracy](https://github.com/Monorise-Team/.github/blob/main/CONTRIBUTING.md)):
+
+- Każde zadanie zaczyna się od zgłoszenia z formularza. Gałąź zakładasz ze zgłoszenia: `gh issue develop <numer> --name "flow/<typ>/<numer>-<opis>" --base dev`, np. `flow/feature/004-pricing-section`.
+- Pull request do `dev` (domyślna gałąź) z szablonu: `Closes #<numer>` i sekcja „Dla użytkowników”. Scalamy zwykłym scaleniem (merge commit), nigdy przez squash.
+- Commity: [Conventional Commits](https://www.conventionalcommits.org/) po angielsku (`feat`, `fix`, `chore`, `docs`…), nagłówek do 72 znaków, linie opisu do 100. Hook `commit-msg` sprawdza to commitlintem (`commitlint.config.mjs`), a `pre-commit` uruchamia ESLint i Prettier na zmienionych plikach i sprawdza typy.
+- Wydanie: pull request z `dev` do `prod` („🚀 Release: dev → prod”). Po scaleniu Release Please liczy wersję z commitów, dopisuje `CHANGELOG.md` i oznacza wydanie `vX.Y.Z`; wersji nie zmieniamy ręcznie. Vercel wdraża `prod` na monorise.studio, a automat scala `prod` z powrotem do `dev`.
+- Pilna poprawka: `flow/hotfix/<numer>-<opis>` od `prod`, pull request do `prod`.
+- Automat pull requestów odrzuca gałęzie spoza konwencji, a do `prod` wpuszcza tylko `dev` i `flow/hotfix/…`. Przed scaleniem sprawdź, że „Lint, types and build” jest zielone.
 - Bez force push, `git reset --hard` i usuwania gałęzi `prod` i `dev`.
