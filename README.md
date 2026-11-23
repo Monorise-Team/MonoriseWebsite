@@ -27,7 +27,7 @@ pnpm check      # formatowanie, lint, typy, build
 | `dev` (domyślna)            | wersja deweloperska; tu trafiają pull requesty zadań          |
 | `flow/<typ>/<numer>-<opis>` | gałąź zadania, zakładana ze zgłoszenia; pull request do `dev` |
 
-Wydanie to pull request z `dev` do `prod`, pilna poprawka to `flow/hotfix/<numer>-<opis>` od `prod`. Scalamy zwykłym scaleniem. Szczegóły: [zasady współpracy](https://github.com/Monorise-Team/.github/blob/main/CONTRIBUTING.md).
+Wydanie to pull request z `dev` do `prod`, pilna poprawka to `flow/hotfix/<numer>-<opis>` od `prod`. Scalamy zwykłym scaleniem. Wersję, `CHANGELOG.md` i oznaczenie `vX.Y.Z` tworzy Release Please z commitów w formacie Conventional Commits. Szczegóły: [zasady współpracy](https://github.com/Monorise-Team/.github/blob/main/CONTRIBUTING.md).
 
 ## Licencja
 
