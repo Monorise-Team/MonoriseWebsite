@@ -21,13 +21,13 @@ pnpm check      # formatowanie, lint, typy, build
 
 ## Gałęzie
 
-| Gałąź           | Rola                                            |
-| --------------- | ----------------------------------------------- |
-| `prod`          | wersja produkcyjna, wdrażana na monorise.studio |
-| `dev`           | wersja deweloperska                             |
-| `flow/<zmiana>` | gałęzie tymczasowe; pull request do `dev`       |
+| Gałąź                       | Rola                                                          |
+| --------------------------- | ------------------------------------------------------------- |
+| `prod`                      | wersja produkcyjna, wdrażana na monorise.studio               |
+| `dev` (domyślna)            | wersja deweloperska; tu trafiają pull requesty zadań          |
+| `flow/<typ>/<numer>-<opis>` | gałąź zadania, zakładana ze zgłoszenia; pull request do `dev` |
 
-Wydanie to pull request z `dev` do `prod` (zwykłe scalenie). Pilna poprawka: `flow/hotfix-<opis>` od `prod`.
+Wydanie to pull request z `dev` do `prod`, pilna poprawka to `flow/hotfix/<numer>-<opis>` od `prod`. Scalamy zwykłym scaleniem. Szczegóły: [zasady współpracy](https://github.com/Monorise-Team/.github/blob/main/CONTRIBUTING.md).
 
 ## Licencja
 
