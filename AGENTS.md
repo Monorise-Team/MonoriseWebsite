@@ -29,7 +29,7 @@ Szczegóły: [zasady współpracy](https://github.com/Monorise-Team/.github/blob
 ### Zanim uznasz zadanie za gotowe
 
 - README (repozytorium i zmienionej paczki) oraz część o repozytorium w `AGENTS.md` opisują nowy stan.
-- Zgłoszenie i pull request mają etykiety `type:`, `prio:` i `area:` (brakujący obszar dopisz w `labels/repos.json` w Monorise-Team/.github), milestone i kartę we właściwej kolumnie.
+- Zgłoszenie i pull request mają etykiety `type:`, `prio:` i `area:` (brakujący obszar dopisz w `labels/repos.json` w Monorise-Team/.github), milestone, kartę, pola (`Priority`, `Effort`, `Start date`, `Target date`), relacje i gałąź rozwojową; braki uzupełnia `node scripts/repo-setup.mjs meta` w Monorise-Team/.github.
 - Opis, strona i tematy repozytorium na GitHubie zgadzają się z `labels/repos.json` w Monorise-Team/.github.
 - Zmiana decyzji, stanu budowy albo otwartych spraw: osobne zgłoszenie i pull request w MonoriseDocumentation.
 - Nowa trwała zasada albo zmiana kierunku trafia do wzorca tych zasad. Nie zostawiaj wiedzy tylko w rozmowie.
