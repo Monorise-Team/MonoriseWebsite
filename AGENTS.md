@@ -22,6 +22,7 @@ Obowiązują każdego agenta AI (Claude, Gemini, ChatGPT i Codex, GitHub Copilot
 5. Scalanie zwykłym merge commitem po zielonym CI. Logowanie, uprawnienia, struktura bazy i dostęp do skrzynek: dopiero po zgodzie właściciela.
 6. Wydanie: pull request `dev` → `prod`; Release Please liczy wersję, tworzy tag i opis wydania. Wersji nie zmieniamy ręcznie.
 7. Karta na tablicy „Monorise”: 🛠️ In Progress przy gałęzi, 👀 Code Review przy pull requeście.
+8. Ważne pull requesty (bezpieczeństwo, logowanie, uprawnienia, baza, skrzynki, wspólne workflow i skrypty, utrzymanie i większe zmiany kodu) po zielonym CI dostają przegląd Copilota: `gh pr edit <numer> --add-reviewer "@copilot"`. Jego uwagi poprawiasz albo odpowiadasz na nie przed scaleniem.
 
 Szczegóły: [zasady współpracy](https://github.com/Monorise-Team/.github/blob/main/CONTRIBUTING.md).
 
@@ -54,7 +55,7 @@ Nazwę i przeznaczenie ustala właściciel. Potem: wpis w `labels/repos.json` w 
 
 ### Kierunek
 
-Teraz wstępne wersje bibliotek `@monorise-team/*` w MonoriseShared: `permissions` i `events` (gotowe), dalej `sdk` i `testing` (dokumentacja zakłada je, gdy powstanie API Core, więc kolejność potwierdza właściciel), w razie potrzeby `utils`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane. Potem MonoriseCore (pracownicy, jednostki, role, migawka uprawnień) i produkty składane z bibliotek (ADR-0095).
+Gotowe biblioteki: `config`, `tokens`, `ui`, `auth`, `permissions` i `events`. Teraz opis API Core (OpenAPI) generowany z kodu MonoriseCore, z niego `@monorise-team/sdk`; potem dziedzina Core (jednostki, pracownicy, role, dostęp do aplikacji, migawka uprawnień) i `@monorise-team/testing`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane (ADR-0095).
 
 ### Utrzymanie tych zasad
 
