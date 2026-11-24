@@ -101,6 +101,8 @@ Strona wizytówka [monorise.studio](https://monorise.studio): po polsku pod `/`,
 
 ## Gałęzie i wydania
 
-- Vercel wdraża `prod` na monorise.studio, a automat scala `prod` z powrotem do `dev`.
+- Produkcja wdraża się tylko z `prod` (na monorise.studio), a podgląd tylko z `preview`; `dev` i `flow/*` nie dostają wdrożeń (ADR-0097). Po wydaniu automat scala `prod` z powrotem do `dev`.
+- Gałąź `preview` przesuwa wyłącznie workflow `deploy-preview.yml` (przy pull requeście `dev` → `prod`, na żądanie lub po oznaczeniu `preview-<opis>`), nigdy ręcznie.
+- W `vercel.json` włączone do wdrożeń mogą być tylko `prod` i `preview`.
 - Automat pull requestów odrzuca gałęzie spoza konwencji, a do `prod` wpuszcza tylko `dev` i `flow/hotfix/…`. Przed scaleniem sprawdź, że „Lint, types and build” jest zielone.
 - Zmiany wyglądu sprawdzamy w przeglądarce przed scaleniem.
