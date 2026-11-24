@@ -54,7 +54,7 @@ Nazwę i przeznaczenie ustala właściciel. Potem: wpis w `labels/repos.json` w 
 
 ### Kierunek
 
-Teraz wstępne wersje bibliotek `@monorise-team/*` w MonoriseShared: `permissions` (gotowa), `events`, `sdk`, `testing`, w razie potrzeby `utils`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane. Potem MonoriseCore (pracownicy, jednostki, role, migawka uprawnień) i produkty składane z bibliotek (ADR-0095).
+Teraz wstępne wersje bibliotek `@monorise-team/*` w MonoriseShared: `permissions` i `events` (gotowe), dalej `sdk` i `testing` (dokumentacja zakłada je, gdy powstanie API Core, więc kolejność potwierdza właściciel), w razie potrzeby `utils`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane. Potem MonoriseCore (pracownicy, jednostki, role, migawka uprawnień) i produkty składane z bibliotek (ADR-0095).
 
 ### Utrzymanie tych zasad
 
