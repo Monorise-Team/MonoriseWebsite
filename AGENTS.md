@@ -55,7 +55,7 @@ Nazwę i przeznaczenie ustala właściciel. Potem: wpis w `labels/repos.json` w 
 
 ### Kierunek
 
-Gotowe biblioteki: `config`, `tokens`, `ui`, `auth`, `permissions` i `events`. Teraz opis API Core (OpenAPI) generowany z kodu MonoriseCore, z niego `@monorise-team/sdk`; potem dziedzina Core (jednostki, pracownicy, role, dostęp do aplikacji, migawka uprawnień) i `@monorise-team/testing`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane (ADR-0095).
+Gotowe biblioteki: `config`, `tokens`, `ui`, `auth`, `permissions`, `events` i `sdk`; Core API ma opis OpenAPI generowany z kodu (`/core/v1`). Teraz dziedzina Core: jednostki, pracownicy, role, dostęp do aplikacji, rejestracja uprawnień i migawka uprawnień (migracje bazy scala się po zgodzie właściciela). Potem `@monorise-team/testing`, na końcu `ui` i `tokens` według wzoru wyglądu od właściciela. Aplikacje (AvenMail, TimoTime) i testy na żywo są wstrzymane (ADR-0095).
 
 ### Utrzymanie tych zasad
 
