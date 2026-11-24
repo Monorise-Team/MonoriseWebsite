@@ -29,7 +29,8 @@ Wdrożenia działają na Vercel według zasad z ADR-0097:
   - na żądanie z zakładki Actions albo poleceniem `gh workflow run deploy-preview.yml -R Monorise-Team/MonoriseWebsite` (opcjonalnie z `-f ref=<commit>`),
   - po wypchnięciu oznaczenia `preview-<opis>` na commicie z `dev`.
 - Gałęzie `dev` i `flow/*` nie dostają wdrożeń online. Zmiany sprawdzamy lokalnie (`pnpm dev`) i w CI.
-- W repozytorium widoczne są środowiska GitHub „Production” i „Preview” z adresami wdrożeń.
+- Stały adres podglądu: https://monorise-website-git-preview-monorise-projects.vercel.app. Jest chroniony logowaniem Vercel, więc widzą go tylko osoby z zespołu zalogowane do Vercel.
+- W repozytorium widoczne są środowiska GitHub „Preview” i „Production” z adresami wdrożeń (Production od pierwszego wydania po tej zmianie).
 
 ## Gałęzie
 
