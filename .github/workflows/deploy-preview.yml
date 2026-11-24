@@ -1,0 +1,120 @@
+name: Deploy Preview
+
+# Przesuwa gałąź-wskaźnik `preview` do przodu do commita z `dev` (ADR-0097).
+# Vercel buduje podgląd wyłącznie z `preview` (konfiguracja w `vercel.json`).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [prod]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Gałąź lub SHA commita z dev (domyślnie dev)"
+        required: false
+        default: "dev"
+        type: string
+  push:
+    tags:
+      - "preview-*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-preview
+  cancel-in-progress: false
+
+jobs:
+  deploy-preview:
+    name: Update preview branch
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.head_ref == 'dev' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Przesunięcie gałęzi preview
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          INPUT_REF: ${{ inputs.ref }}
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if ! git rev-parse --verify --quiet refs/remotes/origin/dev >/dev/null; then
+            echo "::error::Brak gałęzi origin/dev w repozytorium."
+            exit 1
+          fi
+
+          case "$EVENT_NAME" in
+            pull_request)
+              target_sha=$(git rev-parse --verify "${PR_HEAD_SHA}^{commit}")
+              trigger="pull request #${PR_NUMBER} (dev -> prod)"
+              ;;
+            push)
+              target_sha=$(git rev-parse --verify "${EVENT_SHA}^{commit}")
+              trigger="oznaczenie ${REF_NAME}"
+              ;;
+            workflow_dispatch)
+              requested_ref="${INPUT_REF:-dev}"
+              if git rev-parse --verify --quiet "refs/remotes/origin/${requested_ref}^{commit}" >/dev/null; then
+                target_sha=$(git rev-parse --verify "refs/remotes/origin/${requested_ref}^{commit}")
+              elif git rev-parse --verify --quiet "${requested_ref}^{commit}" >/dev/null; then
+                target_sha=$(git rev-parse --verify "${requested_ref}^{commit}")
+              else
+                echo "::error::Nie znaleziono gałęzi ani commita: ${requested_ref}"
+                exit 1
+              fi
+              trigger="uruchomienie ręczne (${requested_ref})"
+              ;;
+            *)
+              echo "::error::Nieobsługiwany wyzwalacz: ${EVENT_NAME}"
+              exit 1
+              ;;
+          esac
+
+          if ! git merge-base --is-ancestor "$target_sha" origin/dev; then
+            echo "::error::Podgląd przyjmuje tylko commity z dev (commit ${target_sha} nie należy do origin/dev)."
+            exit 1
+          fi
+
+          short_sha=$(git rev-parse --short "$target_sha")
+          subject=$(git log -1 --format=%s "$target_sha")
+          preview_url="https://monorise-website-git-preview-monorise-projects.vercel.app"
+
+          if git rev-parse --verify --quiet refs/remotes/origin/preview >/dev/null; then
+            current_preview=$(git rev-parse --verify refs/remotes/origin/preview)
+            if [ "$current_preview" = "$target_sha" ]; then
+              {
+                echo "### Podgląd jest już aktualny"
+                echo ""
+                echo "- Commit: \`${short_sha}\` (${subject})"
+                echo "- Wyzwalacz: ${trigger}"
+                echo "- Adres podglądu: ${preview_url} (widoczny również w środowisku „Preview” w repozytorium)"
+              } >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            if ! git merge-base --is-ancestor "$current_preview" "$target_sha"; then
+              echo "::error::Gałąź preview (${current_preview}) nie jest przodkiem ${target_sha} i nie da się jej przesunąć do przodu. Opiekun repozytorium musi raz ręcznie ustawić preview z powrotem na dev."
+              exit 1
+            fi
+          fi
+
+          git push origin "${target_sha}:refs/heads/preview"
+
+          {
+            echo "### Zaktualizowano gałąź \`preview\`"
+            echo ""
+            echo "- Commit: \`${short_sha}\` (${subject})"
+            echo "- Wyzwalacz: ${trigger}"
+            echo "- Adres podglądu: ${preview_url} (wdrożenie pojawi się też w środowisku „Preview” w repozytorium)"
+          } >> "$GITHUB_STEP_SUMMARY"
